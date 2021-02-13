@@ -25,9 +25,20 @@
                     <div class="card-body">
                         <small class="text-muted">{{$item->secondaryCategory->primaryCategory->name}} / {{$item->secondaryCategory->name}}</small>
                         <h5 class="card-title">{{$item->name}}</h5>
+                        <a href="{{ route('item', [$item->id]) }}" class="stretched-link"></a>
                     </div>
-                    <a href="{{ route('item', [$item->id]) }}" class="stretched-link"></a>
                 </div>
+                @if($like_model->like_exist(Auth::user()->id,$item->id))
+                    <p class="favorite-marke">
+                      <a class="js-like-toggle loved" href="" data-itemid="{{ $item->id }}"><i class="fas fa-heart"></i></a>
+                      <span class="likesCount">{{$item->likes_count}}</span>
+                    </p>
+                @else
+                    <p class="favorite-marke">
+                      <a class="js-like-toggle" href="" data-itemid="{{ $item->id }}"><i class="fas fa-heart"></i></a>
+                      <span class="likesCount">{{$item->likes_count}}</span>
+                    </p>
+                @endif​
             </div>
         @endforeach
     </div>

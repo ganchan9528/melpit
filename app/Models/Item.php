@@ -39,4 +39,14 @@ class Item extends Model
     {
         return $this->state === self::STATE_BOUGHT;
     }
+
+    public function users()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function likes()
+    {
+        return $this->hasMany(Like::class);
+    }
 }

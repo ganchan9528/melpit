@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Item;
+use App\Models\Like;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -43,8 +44,17 @@ class ItemsController extends Controller
     		->orderBy('id', 'DESC')
     		->paginate(52);
 
-    	return view('items.items')
-    		->with('items', $items);
+        $data = [];
+
+        $items = Item::withCount('likes')->orderBy('id', 'desc')->paginate(10);
+        $like_model = new Like;
+
+        $data = [
+            'items' => $items,
+            'like_model' => $like_model,
+        ];
+
+    	return view('items.items', $data);
     }
 
     public function escape(string $value)
@@ -129,5 +139,36 @@ class ItemsController extends Controller
         }
 
         DB::commit();
+    }
+
+    public function ajaxlike(Request $request)
+    {
+        $id = Auth::user()->id;
+        $item_id = $request->item_id;
+        $like = new Like;
+        $item = Item::findOrFail($item_id);
+        
+
+        // 空でない（既にいいねしている）なら
+        if ($like->like_exist($id, $item_id)) {
+            //likesテーブルのレコードを削除
+            $like = Like::where('item_id', $item_id)->where('user_id', $id)->delete();
+        } else {
+            //空（まだ「いいね」していない）ならlikesテーブルに新しいレコードを作成する
+            $like = new Like;
+            $like->item_id = $request->item_id;
+            $like->user_id = Auth::user()->id;
+            $like->save();
+        }
+
+        $itemLikesCount = $item->loadCount('likes')->likes_count;
+
+        //一つの変数にajaxに渡す値をまとめる
+        //今回ぐらい少ない時は別にまとめなくてもいいけど一応。笑
+        $json = [
+            'itemLikesCount' => $itemLikesCount,
+        ];
+        //下記の記述でajaxに引数の値を返す
+        return response()->json($json);
     }
 }

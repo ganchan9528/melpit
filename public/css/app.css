@@ -10846,6 +10846,7 @@ a.text-dark:focus {
   visibility: hidden !important;
 }
 
+
 @media print {
   *,
   *::before,
@@ -10944,3 +10945,6 @@ a.text-dark:focus {
   }
 }
 
+.loved i {
+  color: #ff3399 !important;
+}

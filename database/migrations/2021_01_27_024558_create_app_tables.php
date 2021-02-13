@@ -72,40 +72,48 @@ class CreateAppTables extends Migration
                 ->on('item_conditions');
         });
 
-        // Schema::create('favorites', function (Blueprint $table) {
-        //     $table->id();
-        //     $table->unsignedBigInteger('user_id');
-        //     $table->unsignedBigInteger('item_id');
-        //     $table->timestamps();
+        Schema::create('likes', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('item_id');
 
-        //     $table->index('id');
-        //     $table->index('user_id');
-        //     $table->index('item_id');
+            $table->index('id');
+            $table->index('user_id');
+            $table->index('item_id');
 
-        //     $table->foreign('user_id')
-        //         ->references('id')
-        //         ->on('users');
+            $table->unique([
+                'user_id',
+                'item_id'
+            ]);
 
-        //     $table->foreign('item_id')
-        //         ->references('id')
-        //         ->on('items');
-        // });
+            $table->timestamps();
 
-        // Schema::create('cart_items', function (Blueprint $table) {
-        //     $table->id();
-        //     $table->unsignedBigInteger('user_id');
-        //     $table->unsignedBigInteger('item_id');
-        //     $table->unsignedBigInteger('quantity');
-        //     $table->timestamps();
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users')
+                ->onDelete('cascade');
 
-        //     $table->foreign('user_id')
-        //         ->references('id')
-        //         ->on('users');
+            $table->foreign('item_id')
+                ->references('id')
+                ->on('items')
+                ->onDelete('cascade');
+        });
 
-        //     $table->foreign('item_id')
-        //         ->references('id')
-        //         ->on('items');
-        // });
+        Schema::create('cart_items', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('item_id');
+            $table->unsignedBigInteger('quantity');
+            $table->timestamps();
+
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users');
+
+            $table->foreign('item_id')
+                ->references('id')
+                ->on('items');
+        });
     }
 
     /**
@@ -115,6 +123,8 @@ class CreateAppTables extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('likes');
+        Schema::dropIfExists('cart_items');
         Schema::dropIfExists('items');
         Schema::dropIfExists('item_conditions');
         Schema::dropIfExists('secondary_categories');

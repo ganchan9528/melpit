@@ -46,4 +46,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Item::class, 'buyer_id');
     }
+
+    public function likes()
+    {
+        return $this->hasMany(Like::class);
+    }
 }
