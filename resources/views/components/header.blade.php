@@ -75,6 +75,9 @@
                             <a class="dropdown-item" href="{{ route('bought-items') }}">
                                 <i class="fas fa-shopping-bag text-left" style="width: 30px"></i>購入した商品
                             </a>
+                            <a class="dropdown-item" href="{{ route('like-items') }}">
+                                <i class="fas fa-heart text-left" style="width: 30px"></i>お気に入りした商品
+                            </a>
                             <a class="dropdown-item" href="{{ route('edit-profile') }}">
                                 <i class="far fa-address-card text-left" style="width: 30px"></i>プロフィール編集
                             </a>

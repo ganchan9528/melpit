@@ -28,6 +28,8 @@
                         <a href="{{ route('item', [$item->id]) }}" class="stretched-link"></a>
                     </div>
                 </div>
+                <form method="POST" action="likeitem">
+                    {{ csrf_field() }}
                 @if($like_model->like_exist(Auth::user()->id,$item->id))
                     <p class="favorite-marke">
                       <a class="js-like-toggle loved" href="" data-itemid="{{ $item->id }}"><i class="fas fa-heart"></i></a>
@@ -39,6 +41,9 @@
                       <span class="likesCount">{{$item->likes_count}}</span>
                     </p>
                 @endif​
+                    <input type="hidden" name="item_id" value="{{ $item->id }}">
+                </form>
+                
             </div>
         @endforeach
     </div>

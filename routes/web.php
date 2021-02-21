@@ -33,6 +33,7 @@ Route::middleware('auth')
 			->name('sell');
 
 		Route::post('ajaxlike', 'ItemsController@ajaxlike')->name('items.ajaxlike');
+		Route::post('likeitem', 'LikeController@showLikeItems')->name('likeitem');
 	});
 
 Route::prefix('mypage')
@@ -54,6 +55,6 @@ Route::prefix('mypage')
 		Route::post('cart-items', 'CartItemsController@addCartItems')
 			->name('cart-items');
 
-		Route::get('favorites', 'LikeController@showFavoriteItems')
-			->name('favorites');
+		Route::get('like-items', 'LikeController@showLikeItems')
+			->name('like-items');
 	});
