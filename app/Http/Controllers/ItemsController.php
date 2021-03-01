@@ -151,9 +151,11 @@ class ItemsController extends Controller
 
         // 空でない（既にいいねしている）なら
         if ($like->like_exist($id, $item_id)) {
+            Log::debug(11111);
             //likesテーブルのレコードを削除
             $like = Like::where('item_id', $item_id)->where('user_id', $id)->delete();
         } else {
+            Log::debug(22222);
             //空（まだ「いいね」していない）ならlikesテーブルに新しいレコードを作成する
             $like = new Like;
             $like->item_id = $request->item_id;

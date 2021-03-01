@@ -10,40 +10,45 @@
         @foreach ($items as $item)
             <div class="col-3 mb-3">
                 <div class="card">
-                    <div class="position-relative overflow-hidden">
-                        <img class="card-img-top" src="/storage/item-images/{{$item->image_file_name}}">
-                        <div class="position-absolute py-2 px-3" style="left: 0; bottom: 20px; color: white; background-color: rgba(0, 0, 0, 0.70)">
-                            <i class="fas fa-yen-sign"></i>
-                            <span class="ml-1">{{number_format($item->price)}}</span>
-                        </div>
-                        @if ($item->isStateBought)
-                            <div class="position-absolute py-1 font-weight-bold d-flex justify-content-center align-items-end" style="left: 0; top: 0; color: white; background-color: #EA352C; transform: translate(-50%,-50%) rotate(-45deg); width: 125px; height: 125px; font-size: 20px;">
-                                <span>SOLD</span>
+                    <a href="{{ route('item', [$item->id]) }}">
+                        <div class="position-relative overflow-hidden">
+                            <img class="card-img-top" src="/storage/item-images/{{$item->image_file_name}}">
+                            <div class="position-absolute py-2 px-3" style="left: 0; bottom: 20px; color: white; background-color: rgba(0, 0, 0, 0.70)">
+                                <i class="fas fa-yen-sign"></i>
+                                <span class="ml-1">{{number_format($item->price)}}</span>
                             </div>
-                        @endif
-                    </div>
+                            @if ($item->isStateBought)
+                                <div class="position-absolute py-1 font-weight-bold d-flex justify-content-center align-items-end" style="left: 0; top: 0; color: white; background-color: #EA352C; transform: translate(-50%,-50%) rotate(-45deg); width: 125px; height: 125px; font-size: 20px;">
+                                    <span>SOLD</span>
+                                </div>
+                            @endif
+                        </div>
+                    </a>
+                    <a href="{{ route('item', [$item->id]) }}" style="text-decoration: none; color: black;">
                     <div class="card-body">
                         <small class="text-muted">{{$item->secondaryCategory->primaryCategory->name}} / {{$item->secondaryCategory->name}}</small>
                         <h5 class="card-title">{{$item->name}}</h5>
-                        <a href="{{ route('item', [$item->id]) }}" class="stretched-link"></a>
+                        <form method="POST" action="likeitem" style="width: 80px; height: 25px;">
+                        {{ csrf_field() }}
+                            @auth
+                            @if($like_model->like_exist(Auth::user()->id,$item->id))
+                                <p class="favorite-marke">
+                                  <a class="js-like-toggle loved" href="" data-itemid="{{ $item->id }}"><i class="fas fa-heart"></i></a>
+                                  <span class="likesCount">{{$item->likes_count}}</span>
+                                </p>
+                            @else
+                                <p class="favorite-marke">
+                                  <a class="js-like-toggle" href="" data-itemid="{{ $item->id }}"><i class="fas fa-heart"></i></a>
+                                  <span class="likesCount">{{$item->likes_count}}</span>
+                                </p>
+                            @endif​
+                            @endauth
+                        <input type="hidden" name="item_id" value="{{ $item->id }}">
+                        </form>
+                        <!-- <a href="{{ route('item', [$item->id]) }}" class="stretched-link"></a> -->
                     </div>
+                </a>
                 </div>
-                <form method="POST" action="likeitem">
-                    {{ csrf_field() }}
-                @if($like_model->like_exist(Auth::user()->id,$item->id))
-                    <p class="favorite-marke">
-                      <a class="js-like-toggle loved" href="" data-itemid="{{ $item->id }}"><i class="fas fa-heart"></i></a>
-                      <span class="likesCount">{{$item->likes_count}}</span>
-                    </p>
-                @else
-                    <p class="favorite-marke">
-                      <a class="js-like-toggle" href="" data-itemid="{{ $item->id }}"><i class="fas fa-heart"></i></a>
-                      <span class="likesCount">{{$item->likes_count}}</span>
-                    </p>
-                @endif​
-                    <input type="hidden" name="item_id" value="{{ $item->id }}">
-                </form>
-                
             </div>
         @endforeach
     </div>

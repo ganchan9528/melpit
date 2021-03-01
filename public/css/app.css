@@ -10948,3 +10948,11 @@ a.text-dark:focus {
 .loved i {
   color: #ff3399 !important;
 }
+
+.one {
+  z-index: 20;
+}
+
+.two {
+  z-index: 10;
+}
