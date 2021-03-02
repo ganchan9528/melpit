@@ -100,22 +100,6 @@ class CreateAppTables extends Migration
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
         });
-
-        Schema::create('cart_items', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('item_id');
-            $table->unsignedBigInteger('quantity');
-            $table->timestamps();
-
-            $table->foreign('user_id')
-                ->references('id')
-                ->on('users');
-
-            $table->foreign('item_id')
-                ->references('id')
-                ->on('items');
-        });
     }
 
     /**
