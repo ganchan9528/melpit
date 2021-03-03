@@ -23,7 +23,7 @@
 		<div class="font-weight-bold text-center border-bottom pd-3 pt-3" style="font-size: 24px">商品</div>
 
 		<form method="POST" action="{{ route('sell') }}" class="p-5" enctype="multipart/form-data">
-            @csrf
+            {{ csrf_field() }}
 
             {{-- 商品画像 --}}
             <div>商品画像</div>
