@@ -10,6 +10,8 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
+use League\Flysystem\AwsS3v3\AwsS3Adapter;
+
 
 class ProfileController extends Controller
 {
@@ -28,7 +30,7 @@ class ProfileController extends Controller
     	if ($request->has('avatar')) {
      //        $fileName = $this->saveAvatar($request->file('melpit'));
      //        $user->avatar_file_name = $fileName;
-            $file = $request->file('avatar')->store('avatar', 's3');
+            $file = $request->file('avatar');
             $resize_img = Image::make($file)->resize(200, 200);
             $path = $request->file->store('avatar', 's3');
             Storage::disk('s3')->setVisibility($path, 'public')->putFile('/avatar/', (string)$resize_img, 'public');
