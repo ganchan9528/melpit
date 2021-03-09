@@ -12,7 +12,7 @@
                 <div class="card">
                     <a href="{{ route('item', [$item->id]) }}">
                         <div class="position-relative overflow-hidden">
-                            <img class="card-img-top" src="/storage/item-images/{{$item->image_file_name}}">
+                            <img class="card-img-top" src="{{$item->image_file_name}}">
                             <div class="position-absolute py-2 px-3" style="left: 0; bottom: 20px; color: white; background-color: rgba(0, 0, 0, 0.70)">
                                 <i class="fas fa-yen-sign"></i>
                                 <span class="ml-1">{{number_format($item->price)}}</span>
