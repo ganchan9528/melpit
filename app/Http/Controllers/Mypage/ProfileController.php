@@ -28,7 +28,7 @@ class ProfileController extends Controller
     	if ($request->has('avatar')) {
      //        $fileName = $this->saveAvatar($request->file('melpit'));
      //        $user->avatar_file_name = $fileName;
-            $file = $request->file('avatar');
+            $file = $request->file('avatar')->store('avatar', 's3');
             $resize_img = Image::make($file)->resize(200, 200);
             $path = $request->file->store('avatar', 's3');
             Storage::disk('s3')->setVisibility($path, 'public')->putFile('/avatar/', (string)$resize_img, 'public');
