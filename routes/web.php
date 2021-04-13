@@ -13,7 +13,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('', 'ItemsController@showItems')->name('top');
+Route::get('', 'ItemsController@index')->name('top');
+Route::get('search', 'ItemsController@search')->name('search');
 
 Auth::routes();
 
@@ -27,13 +28,16 @@ Route::middleware('auth')
 		Route::post('items/{item}/buy', 'ItemsController@buyItem')
 			->name('item.buy');
 
-		Route::get('sell', 'SellController@showSellForm')
-			->name('sell');
-		Route::post('sell', 'SellController@sellItem')
-			->name('sell');
+		Route::get('sell', 'SellController@index')->name('sell');
+		Route::post('sell', 'SellController@store')->name('sell');
+
+		Route::get('items/{item}/sell-edit', 'SellController@edit')->name('sell-edit');
+		Route::put('items/{item}/sell-edit', 'SellController@update')->name('sell-edit');
+		Route::delete('items/{item}/sell-edit', 'SellController@destroy')->name('sell-destroy');
 
 		Route::post('ajaxlike', 'ItemsController@ajaxlike')->name('items.ajaxlike');
 		Route::post('likeitem', 'LikeController@showLikeItems')->name('likeitem');
+		
 	});
 
 Route::prefix('mypage')
@@ -48,12 +52,12 @@ Route::prefix('mypage')
 			->name('bought-items');
 		Route::get('sold-items', 'SoldItemsController@showSoldItems')
 			->name('sold-items');
-
-
-		Route::get('cart-items', 'CartItemsController@showCartItems')
+		Route::get('cart-items', 'CartItemController@index')
 			->name('cart-items');
-		Route::post('cart-items', 'CartItemsController@addCartItems')
-			->name('cart-items');
+		Route::post('cart-items', 'CartItemController@store')->name('cart-items');
+		Route::delete('cart-items/{item}', 'CartItemController@destroy')
+			->name('cart-destroy');
+		
 
 		Route::get('like-items', 'LikeController@showLikeItems')
 			->name('like-items');

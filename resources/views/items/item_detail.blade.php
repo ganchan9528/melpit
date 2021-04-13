@@ -9,7 +9,7 @@
     <div class="row">
         <div class="col-8 offset-2 bg-white">
             <div class="row mt-3">
-                <div class="col-8 offset-2">
+                <div class="col-10 offset-1">
                     @if (session('message'))
                         <div class="alert alert-{{ session('type', 'success') }}" role="alert">
                             {{ session('message') }}
@@ -23,12 +23,20 @@
             ])
 
             <div class="row">
-                <div class="col-8 offset-2">
-                    @if ($item->isStateSelling)
-                        <a href="{{route('item.buy', [$item->id])}}" class="btn btn-secondary btn-block">購入</a>
-                    @else
-                        <button class="btn btn-dark btn-block" disabled>売却済み</button>
-                    @endif
+                <div class="col-10 offset-1">
+                        @if ($item->seller != $user)
+                            @if (!empty($cartitem->item_id))
+                                <a href="{{ route('cart-items') }}" class="btn btn-primary col-md-12"><i class="fas fa-cart-plus mr-1"></i>カートを見る</a>
+                            @else
+                                <form method="POST" action="{{ route('cart-items') }}" class="form-inline m-1" enctype="multipart/form-data">
+                                    @csrf
+                                    <input type="hidden" name="item_id" value="{{ $item->id }}">
+                                    <button type="submit" class="btn btn-primary col-md-12"><i class="fas fa-cart-plus mr-1"></i>カートに入れる</button>
+                                </form>
+                            @endif
+                        @else
+                            <a href="{{ route('sell-edit', [$item->id]) }}" class="btn btn-primary col-md-12"><i class="fas fa-cart-plus mr-1"></i>商品情報を編集する</a>
+                        @endif
                 </div>
             </div>
 

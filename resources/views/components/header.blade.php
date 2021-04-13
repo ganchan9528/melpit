@@ -1,16 +1,17 @@
-<nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
+<nav class="navbar navbar-expand navbar-toggleable-md navbar-light bg-white shadow-sm main-all">
 	<div class="container">
-		<a class="navbar-brand" href="{{ url('/') }}">
+		<a class="navbar-brand d-none d-md-block" href="{{ url('/') }}">
 			<img src="/images/logo-1.png" style="height: 39px;" alt="Melpit">
 		</a>
-
+        <a class="navbar-brand d-md-none" href="{{ url('/') }}">
+            <img src="/images/logo-2.png" style="height: 39px;" alt="Melpit">
+        </a>
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
-             <ul class="navbar-nav ml-auto">
-                <form class="form-inline" method="GET" action="{{ route('top') }}">
+                <form class="form-inline ml-auto" method="GET" action="{{ route('search') }}">
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <select class="custom-select" name="category">
-                                <option value="">全て</option>
+                                <option value="">レディース</option>
                                 @foreach ($categories as $category)
                                     <option value="primary:{{$category->id}}" class="font-weight-bold" {{ $defaults['category'] == "primary:" . $category->id ? 'selected' : ''}}>{{$category->name}}</option>
                                     @foreach ($category->secondaryCategories as $secondary)
@@ -19,7 +20,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <input type="text" name="keyword" class="form-control" value="{{$defaults['keyword']}}" aria-label="Text input with dropdown button" placeholder="キーワード検索">
+                        <input type="text" name="keyword" class="form-control" value="{{$defaults['keyword']}}" aria-label="Text input with drzopdown button" placeholder="キーワード検索">
                         <div class="input-group-append">
                             <button type="submit" class="btn btn-outline-dark">
                                 <i class="fas fa-search"></i>
@@ -27,10 +28,13 @@
                         </div>
                     </div>
                 </form>
+        </div>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">    
+                <ul class="navbar-nav ml-auto">
                 @guest
                     {{-- 非ログイン --}}
                     <li class="nav-item">
-                        <a class="btn btn-secondary ml-3" href="{{ route('register') }}" role="button">会員登録</a>
+                        <a class="btn btn-primary ml-3" href="{{ route('register') }}" role="button">会員登録</a>
                     </li>
                     <li class="nav-item">
                         <a class="btn btn-outline-info ml-2" href="{{ route('login') }}" role="button">ログイン</a>
@@ -41,12 +45,12 @@
                         {{-- ログイン情報 --}}
                         <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                             @if (!empty($user->avatar_file_name))
-                                <!-- <img src="/storage/avatars/{{$user->avatar_file_name}}" class="rounded-circle" style="object-fit: cover; width: 35px; height: 35px;"> -->
-                                <img src="{{$user->avatar_file_name}}" class="rounded-circle" style="object-fit: cover; width: 35px; height: 35px;">
+                                <img src="/storage/avatars/{{$user->avatar_file_name}}" class="rounded-circle" style="object-fit: cover; width: 35px; height: 35px;">
+                               <!--  <img src="{{$user->avatar_file_name}}" class="rounded-circle" style="object-fit: cover; width: 35px; height: 35px;"> -->
                             @else
                                 <img src="/images/avatar-default.svg" class="rounded-circle" style="object-fit: cover; width: 35px; height: 35px;">
                             @endif
-                            {{ $user->name }} <span class="caret"></span>
+                            <span class="d-none d-md-block">{{ $user->name }}</span>
                         </a>
 
                         {{-- ドロップダウンメニュー --}}
@@ -78,6 +82,9 @@
                             </a>
                             <a class="dropdown-item" href="{{ route('like-items') }}">
                                 <i class="fas fa-heart text-left" style="width: 30px"></i>お気に入りした商品
+                            </a>
+                            <a class="dropdown-item" href="{{ route('cart-items') }}">
+                                <i class="fas fa-cart-plus text-left" style="width: 30px"></i>カート
                             </a>
                             <a class="dropdown-item" href="{{ route('edit-profile') }}">
                                 <i class="far fa-address-card text-left" style="width: 30px"></i>プロフィール編集

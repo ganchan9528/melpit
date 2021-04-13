@@ -49,7 +49,7 @@
                 </div>
 
                 <div class="form-group mb-0">
-                    <button type="submit" class="btn btn-block btn-secondary">
+                    <button type="submit" class="btn btn-block btn-primary">
                         ログイン
                     </button>
                 </div>

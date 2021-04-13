@@ -49,4 +49,9 @@ class Item extends Model
     {
         return $this->hasMany(Like::class);
     }
+
+    public function cart()
+    {
+        return $this->belongsTo(Cart::class);
+    }
 }

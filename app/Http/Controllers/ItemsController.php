@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Item;
 use App\Models\Like;
 use App\Models\User;
+use App\Models\Cart;
+use App\Models\PrimaryCategory;
+use App\Models\SecondaryCategory;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,11 +17,41 @@ use Payjp\Charge;
 
 class ItemsController extends Controller
 {
-    public function showItems(Request $request)
+    public function index(Request $request)
+    {
+        $ladiesCategory = PrimaryCategory::where('id', 1)->first();
+        $ladiesChildCategoryIds = $ladiesCategory->secondaryCategories->pluck('id');
+        $ladiesitems = Item::whereIn('secondary_category_id', $ladiesChildCategoryIds)->where('state', 'selling')->inRandomOrder()->take(8)->get();
+
+        $mensCategory = PrimaryCategory::where('id', 2)->first();
+        $mensChildCategoryIds = $mensCategory->secondaryCategories->pluck('id');
+        $mensitems = Item::whereIn('secondary_category_id', $mensChildCategoryIds)->where('state', 'selling')->inRandomOrder()->take(8)->get();
+
+        $toiesCategory = PrimaryCategory::where('id', 6)->first();
+        $toiesChildCategoryIds = $toiesCategory->secondaryCategories->pluck('id');
+        $toiesitems = Item::whereIn('secondary_category_id', $toiesChildCategoryIds)->where('state', 'selling')->inRandomOrder()->take(8)->get();
+
+        $appliancesCategory = PrimaryCategory::where('id', 8)->first();
+        $appliancesChildCategoryIds = $appliancesCategory->secondaryCategories->pluck('id');
+        $appliancesitems = Item::whereIn('secondary_category_id', $appliancesChildCategoryIds)->where('state', 'selling')->inRandomOrder()->take(8)->get();
+
+        $like_model = new Like;
+
+        $data = [
+            'ladiesitems' => $ladiesitems,
+            'mensitems' => $mensitems,
+            'toiesitems' => $toiesitems,
+            'appliancesitems' => $appliancesitems,
+            'like_model' => $like_model,
+        ];
+
+    	return view('items.items2', $data);
+    }
+
+    public function search(Request $request)
     {
         $query = Item::query();
 
-        //カテゴリで絞り込み
         if ($request->filled('category')) {
             list($categoryType, $categoryID) = explode(':', $request->input('category'));
 
@@ -31,30 +64,25 @@ class ItemsController extends Controller
             }
         }
 
-        // キーワードで絞り込み
         if ($request->filled('keyword')) {
             $keyword = '%' . $this->escape($request->input('keyword')) . '%';
-            $query->where(function ($query) use ($keyword) {
-                $query->where('name', 'LIKE', $keyword);
-                $query->orWhere('description', 'LIKE', $keyword);
-            });
-        }
+             $query->where(function ($query) use ($keyword) {
+                 $query->where('name', 'LIKE', $keyword);
+                 $query->orWhere('description', 'LIKE', $keyword);
+             });
+        } 
 
-    	$items = $query->orderByRaw( "FIELD(state, '" . Item::STATE_SELLING . "', '" . Item::STATE_BOUGHT ."')" )
-    		->orderBy('id', 'DESC')
-    		->paginate(52);
-
-        $data = [];
-
-        $items = Item::withCount('likes')->orderBy('id', 'desc')->paginate(10);
+        $item = $items = $query->first();
+        $items = $query->where('state', 'selling')->orderBy('created_at', 'DESC')->paginate(52);
         $like_model = new Like;
 
         $data = [
+            'item' => $item,
             'items' => $items,
             'like_model' => $like_model,
         ];
 
-    	return view('items.items', $data);
+        return view('items.items', $data);
     }
 
     public function escape(string $value)
@@ -68,8 +96,17 @@ class ItemsController extends Controller
 
     public function showItemDetail(Item $item)
     {
-    	return view('items.item_detail')
-    		->with('item', $item);
+        $user = Auth::user();
+        $cartitem = Cart::with('items')->where('item_id', $item->id)->first();
+        // dd($cartitem);
+
+        $data = [
+            'cartitem' => $cartitem,
+            'item' => $item,
+            'user' => $user,
+        ];
+
+    	return view('items.item_detail', $data);
     }
 
     public function showBuyItemForm(Item $item)
@@ -78,8 +115,20 @@ class ItemsController extends Controller
             abort(404);
         }
 
+        $cartitems = Item::select('items.*')
+            ->with("secondaryCategory.primaryCategory")
+            ->where('user_id', Auth::id())
+            ->join('cart_items', 'cart_items.item_id', '=', 'items.id')
+            ->get();
+
+        $subtotal = 0;
+        foreach ($cartitems as $cartitem) {
+            $subtotal += $cartitem->price;
+        }
+
         return view('items.item_buy_form')
-            ->with('item', $item);
+            ->with('cartitems', $cartitems)
+            ->with('subtotal', $subtotal);
     }
 
     public function buyItem(Request $request, Item $item)
@@ -94,6 +143,7 @@ class ItemsController extends Controller
 
         try {
             $this->settlement($item->id, $item->seller->id, $user->id, $token);
+            Cart::where('user_id', Auth::id())->delete();
         } catch (\Exception $e) {
             Log::error($e);
             return redirect()->back()
@@ -117,17 +167,30 @@ class ItemsController extends Controller
                 throw new \Exception('多重決済');
             }
 
-            $item->state     = Item::STATE_BOUGHT;
-            $item->bought_at = Carbon::now();
-            $item->buyer_id  = $buyerID;
-            $item->save();
+            $cartitems = Item::select('items.*')
+                ->with("secondaryCategory.primaryCategory")
+                ->where('user_id', Auth::id())
+                ->join('cart_items', 'cart_items.item_id', '=', 'items.id')
+                ->get();
 
-            $seller->sales += $item->price;
+            $subtotal = 0;
+            foreach ($cartitems as $cartitem) {
+                $subtotal += $cartitem->price;
+            }
+
+            foreach ($cartitems as $item) {
+                $item->state     = Item::STATE_BOUGHT;
+                $item->bought_at = Carbon::now();
+                $item->buyer_id  = $buyerID;
+                $item->save();
+            }
+
+            $seller->sales += $subtotal;
             $seller->save();
 
             $charge = Charge::create([
                 'card'     => $token,
-                'amount'   => $item->price,
+                'amount'   => $subtotal,
                 'currency' => 'jpy'
             ]);
             if (!$charge->captured) {

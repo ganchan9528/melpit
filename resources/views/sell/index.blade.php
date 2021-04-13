@@ -18,21 +18,32 @@
 </div>
 
 <div class="row">
-	<div class="col-8 offset-2 bg-white">
+	<div class="col-10 offset-1 bg-white">
 		
 		<div class="font-weight-bold text-center border-bottom pd-3 pt-3" style="font-size: 24px">商品</div>
 
-		<form method="POST" action="{{ route('sell') }}" class="p-5" enctype="multipart/form-data">
+		<form method="POST" action="{{ route('sell') }}" class="p-2" enctype="multipart/form-data">
             @csrf
 
             {{-- 商品画像 --}}
             <div>商品画像</div>
-            <span class="item-image-form image-picker">
-            	<input type="file" name="item-image" class="d-none" accept="image/png,image/jpeg,image/gif" id="item-image" />
-				<label for="item-image" class="d-inline-block" role="button">
-                 	<img src="/images/item-image-default.png" style="object-fit: cover; width: 300px; height: 300px;">
-				</label>
-            </span>
+            <div class="d-none d-md-block">
+                <span class="item-image-form image-picker">
+                    <input type="file" name="item-image" class="d-none" accept="image/png,image/jpeg,image/gif" id="item-image" />
+                    <label for="item-image" class="d-inline-block" role="button">
+                        <img src="/images/item-image-default.png" style="object-fit: cover; width: 300px; height: 300px;">
+                    </label>
+                </span>
+            </div>
+            <div class="d-md-none">
+                <span class="item-image-form image-picker">
+                    <input type="file" name="item-image" class="d-none" accept="image/png,image/jpeg,image/gif" id="item-image" />
+                    <label for="item-image" class="d-inline-block" role="button">
+                        <img src="/images/item-image-default.png" style="object-fit: cover; width: 100%; height: 20%;">
+                    </label>
+                </span>
+            </div>
+            
 
             {{-- 商品名 --}}
             <div class="form-group">
@@ -112,8 +123,8 @@
                 @enderror
             </div>
 
-            <div class="form-group mb-0 mt-3">
-                <button type="submit" class="btn btn-block btn-secondary">
+            <div class="form-group mb-0 mt-3 w-50 offset-3">
+                <button type="submit" class="btn btn-block btn-primary">
                 	出品する
                 </button>
             </div>

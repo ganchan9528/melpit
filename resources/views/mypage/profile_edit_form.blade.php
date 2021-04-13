@@ -31,8 +31,8 @@
 				<input type="file" name="avatar" class="d-none" accept="image/png,image/jpeg,image/gif" id="avatar" />
 				<label for="avatar" class="d-inline-block">
 					@if (!empty($user->avatar_file_name))
-                 		<!-- <img src="/storage/avatars/{{$user->avatar_file_name}}" class="rounded-circle" style="object-fit: cover; width: 200px; height: 200px;"> -->
-                 		<img src="{{ $user->avatar_file_name }}" class="rounded-circle" style="object-fit: cover; width: 200px; height: 200px;">
+                 		<img src="/storage/avatars/{{$user->avatar_file_name}}" class="rounded-circle" style="object-fit: cover; width: 200px; height: 200px;">
+                 		<!-- <img src="{{ $user->avatar_file_name }}" class="rounded-circle" style="object-fit: cover; width: 200px; height: 200px;"> -->
              		@else
                  		<img src="/images/avatar-default.svg" class="rounded-circle" style="object-fit: cover; width: 200px; height: 200px;">
              		@endif
@@ -51,7 +51,7 @@
 			</div>
 
 			<div class="form-group mb-0 mt-3">
-				<button type="submit" class="btn btn-block btn-secondary">
+				<button type="submit" class="btn btn-block btn-primary">
 					保存
 				</button>
 			</div>

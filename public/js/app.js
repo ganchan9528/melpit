@@ -37308,9 +37308,8 @@ $(function () {
     .done(function (data) {
       //lovedクラスを追加
       $this.toggleClass('loved'); //.likesCountの次の要素のhtmlを「data.postLikesCount」の値に書き換える
-
-      $this.next('.likesCount').html(data.itemLikesCount);
-      console.log(data.itemLikesCount);
+      // $this.next('.likesCount').html(data.itemLikesCount); 
+      // console.log(data.itemLikesCount);
     }) // Ajaxリクエストが失敗した場合
     .fail(function (data, xhr, err) {
       //ここの処理はエラーが出た時にエラー内容をわかるようにしておく。

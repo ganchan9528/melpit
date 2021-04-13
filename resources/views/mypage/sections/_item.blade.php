@@ -1,7 +1,8 @@
 
 <div class="d-flex mt-3 border position-relative">
     <div>
-        <img src="{{$item->image_file_name}}" class="img-fluid" style="height: 140px;">
+        <img src="/storage/item-images/{{$item->image_file_name}}" class="img-fluid" style="height: 140px;">
+        <!-- <img src="{{$item->image_file_name}}" class="img-fluid" style="height: 140px;"> -->
     </div>
     <div class="flex-fill p-3">
         <div>
@@ -17,8 +18,13 @@
             <i class="fas fa-yen-sign"></i>
             <span class="ml-1">{{number_format($item->price)}}</span>
             <i class="far fa-clock ml-3"></i>
-            <span>{{$item->created_at->format('Y年n月j日 H:i')}}</span>
+            @if ($item->isStateBought)
+                <span>{{$item->bought_at->format('Y年n月j日 H:i')}}</span>
+            @else
+                <span>{{$item->created_at->format('Y年n月j日 H:i')}}</span>
+            @endif
         </div>
+        
     </div>
     <a href="{{ route('item', [$item->id]) }}" class="stretched-link"></a>
 </div>

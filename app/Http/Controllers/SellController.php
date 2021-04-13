@@ -16,7 +16,7 @@ use League\Flysystem\AwsS3v3\AwsS3Adapter;
 
 class SellController extends Controller
 {
-    public function showSellForm()
+    public function index()
     {
     	$categories = PrimaryCategory::query()
     		->with([
@@ -28,31 +28,33 @@ class SellController extends Controller
     		->get();
     	$conditions = ItemCondition::orderBy('sort_no')->get();
 
-    	return view('sell')
+    	return view('sell.index')
     		->with('categories', $categories)
     		->with('conditions', $conditions);
     }
 
-    public function sellItem(SellRequest $request)
+    public function store(SellRequest $request)
     {
     	$user = Auth::user();
 
-    	// $imageName = $this->saveImage($request->file('item-image'));
-        $file = $request->file('item-image');
-        $extension = $request->file('item-image')->getClientOriginalExtension();
-        $filename = $request->file('item-image')->getClientOriginalName();
-        $resize_img = Image::make($file)->resize(300, 300)->encode($extension);
-        $path = Storage::disk('s3')->put('/item-image/'.$filename,(string)$resize_img, 'public');
-        $url = Storage::disk('s3')->url('item-image/'.$filename);
+    	$imageName = $this->saveImage($request->file('item-image'));
+
+        // heroku環境
+        // $file = $request->file('item-image');
+        // $extension = $request->file('item-image')->getClientOriginalExtension();
+        // $filename = $request->file('item-image')->getClientOriginalName();
+        // $resize_img = Image::make($file)->resize(300, 300)->encode($extension);
+        // $path = Storage::disk('s3')->put('/item-image/'.$filename,(string)$resize_img, 'public');
+        // $url = Storage::disk('s3')->url('item-image/'.$filename);
         // $user->avatar_file_name = $url;
 
     	$item = new Item();
-    	// $item->image_file_name = $imageName;
-        $item->image_file_name = $url;
+    	$item->image_file_name = $imageName; // ローカル環境
+        // $item->image_file_name = $url;    // heroku環境
     	$item->seller_id = $user->id;
     	$item->name = $request->input('name');
     	$item->description = $request->input('description');
-    	$item->secondary_category_id = $request->input('category');
+        $item->secondary_category_id = $request->input('category');
     	$item->item_condition_id = $request->input('condition');
     	$item->price = $request->input('price');
     	$item->state = Item::STATE_SELLING;
@@ -60,6 +62,60 @@ class SellController extends Controller
 
     	return redirect()->back()
     		->with('status', '商品を出品しました。');
+    }
+
+    public function edit(Item $item) 
+    {
+        $categories = PrimaryCategory::query()
+            ->with([
+                'secondaryCategories' => function ($query) {
+                    $query->orderBy('sort_no');
+                }
+            ]) 
+            ->orderBy('sort_no')
+            ->get();
+        $conditions = ItemCondition::orderBy('sort_no')->get();
+
+        return view('sell.edit')
+            ->with('item', $item)
+            ->with('categories', $categories)
+            ->with('conditions', $conditions);
+    }
+
+    public function update(SellRequest $request, Item $item)
+    {
+        $user = Auth::user();
+
+        $imageName = $this->saveImage($request->file('item-image'));
+
+        // heroku環境
+        // $file = $request->file('item-image');
+        // $extension = $request->file('item-image')->getClientOriginalExtension();
+        // $filename = $request->file('item-image')->getClientOriginalName();
+        // $resize_img = Image::make($file)->resize(300, 300)->encode($extension);
+        // $path = Storage::disk('s3')->put('/item-image/'.$filename,(string)$resize_img, 'public');
+        // $url = Storage::disk('s3')->url('item-image/'.$filename);
+        // $user->avatar_file_name = $url;
+
+        $item->image_file_name = $imageName; // ローカル環境
+        // $item->image_file_name = $url;    // heroku環境
+        $item->seller_id = $user->id;
+        $item->name = $request->input('name');
+        $item->description = $request->input('description');
+        $item->secondary_category_id = $request->input('category');
+        $item->item_condition_id = $request->input('condition');
+        $item->price = $request->input('price');
+        $item->state = Item::STATE_SELLING;
+        $item->save();
+
+        return redirect()->back()
+            ->with('status', '商品情報を変更しました。');
+    }
+
+    public function destroy(Request $request, Item $item)
+    {
+        $item->delete();
+        return redirect('/')->with('status', '出品を取り消しました。');
     }
 
     /**
@@ -72,7 +128,7 @@ class SellController extends Controller
 		{
 			$tempPath = $this->makeTempPath();
 
-			Image::make($file)->fit(300, 300)->save($tempPath);
+			Image::make($file)->fit(250, 150)->save($tempPath);
 
 			$filePath = Storage::disk('public')
 			 ->putFile('item-images', new File($tempPath));

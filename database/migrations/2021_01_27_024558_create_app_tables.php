@@ -47,7 +47,7 @@ class CreateAppTables extends Migration
             $table->unsignedBigInteger('item_condition_id');
 
             $table->string('name');
-            $table->string('image_file_name');
+            $table->string('image_file_name')->nullable();
             $table->text('description');
             $table->unsignedInteger('price');
             $table->string('state');
@@ -100,6 +100,34 @@ class CreateAppTables extends Migration
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
         });
+
+        Schema::create('cart_items', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('item_id');
+
+            $table->index('id');
+            $table->index('user_id');
+            $table->index('item_id');
+
+            $table->unique([
+                'user_id',
+                'item_id'
+            ]);
+
+            $table->timestamps();
+
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+
+            $table->foreign('item_id')
+                ->references('id')
+                ->on('items')
+                ->onDelete('cascade');
+        });
     }
 
     /**
@@ -110,10 +138,11 @@ class CreateAppTables extends Migration
     public function down()
     {
         Schema::dropIfExists('likes');
-        Schema::dropIfExists('cart_items');
+        Schema::dropIfExists('cart-items');
         Schema::dropIfExists('items');
         Schema::dropIfExists('item_conditions');
         Schema::dropIfExists('secondary_categories');
         Schema::dropIfExists('primary_categories');
+        
     }
 }

@@ -28,29 +28,21 @@ class ProfileController extends Controller
     	$user->name = $request->input('name');
 
     	if ($request->has('avatar')) {
-     //        $fileName = $this->saveAvatar($request->file('melpit'));
-     //        $user->avatar_file_name = $fileName;
+            // ローカル環境
+            $fileName = $this->saveAvatar($request->file('avatar'));
+            $user->avatar_file_name = $fileName;
+
+            // heroku環境
             // $file = $request->file('avatar');
-            // $resize_img = Image::make($file)->resize(200, 200);
-            // $path = $request->file->store('avatar', 's3');
-            // Storage::disk('s3')->setVisibility($path, 'public')->putFile('/avatar/', (string)$resize_img, 'public');
-            // $url = Storage::disk('s3')->url($path);
+            // $extension = $request->file('avatar')->getClientOriginalExtension();
+            // $filename = $request->file('avatar')->getClientOriginalName();
+            // $resize_img = Image::make($file)->resize(200, 200)->encode($extension);
+            // $path = Storage::disk('s3')->put('/avatar/'.$filename,(string)$resize_img, 'public');
+            // $url = Storage::disk('s3')->url('avatar/'.$filename);
 
-            $file = $request->file('avatar');
-            $extension = $request->file('avatar')->getClientOriginalExtension();
-            $filename = $request->file('avatar')->getClientOriginalName();
-            $resize_img = Image::make($file)->resize(200, 200)->encode($extension);
-            $path = Storage::disk('s3')->put('/avatar/'.$filename,(string)$resize_img, 'public');
-            $url = Storage::disk('s3')->url('avatar/'.$filename);
-
-            $user->avatar_file_name = $url;
+            // $user->avatar_file_name = $url;
             $user->save();
         }
-
-     //    $file = $request->file('file');
-     //    $path = Storage::disk('s3')->putFile('/', $file, 'public');
-
-    	// $user->save();
 
 
 
@@ -66,12 +58,19 @@ class ProfileController extends Controller
     */
     private function saveAvatar(UploadedFile $file): string
 		{
-			// $tempPath = $this->makeTempPath();
+			$tempPath = $this->makeTempPath();
+            // ローカル
+			Image::make($file)->fit(200, 200)->save($tempPath);
+            // heroku
+            // Image::make($file)->fit(200, 200)->save();
 
-			Image::make($file)->fit(200, 200)->save();
+            $filePath = Storage::disk('public')
+            ->putFile('avatars', new File($tempPath));
 
-			$filePath = Storage::disk('s3')
-			 ->putFile('/melpit/', $file, 'public');
+
+            // s3を使う場合(heroku)
+			// $filePath = Storage::disk('s3')
+			//  ->putFile('/melpit/', $file, 'public');
 
             // $file = $request->file('file');
             // $path = Storage::disk('s3')->putFile('/', $file, 'public');
