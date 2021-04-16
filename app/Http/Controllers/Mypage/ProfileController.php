@@ -39,8 +39,8 @@ class ProfileController extends Controller
             // $resize_img = Image::make($file)->resize(200, 200)->encode($extension);
             // $path = Storage::disk('s3')->put('/avatar/'.$filename,(string)$resize_img, 'public');
             // $url = Storage::disk('s3')->url('avatar/'.$filename);
-
             // $user->avatar_file_name = $url;
+            
             $user->save();
         }
 
@@ -72,8 +72,8 @@ class ProfileController extends Controller
 			// $filePath = Storage::disk('s3')
 			//  ->putFile('/melpit/', $file, 'public');
 
-            // $file = $request->file('file');
-            // $path = Storage::disk('s3')->putFile('/', $file, 'public');
+   //          $file = $request->file('file');
+   //          $path = Storage::disk('s3')->putFile('/', $file, 'public');
 
 			return basename($filePath);
 		}

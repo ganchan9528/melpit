@@ -50,7 +50,7 @@ class SellController extends Controller
 
     	$item = new Item();
     	$item->image_file_name = $imageName; // ローカル環境
-        // $item->image_file_name = $url;    // heroku環境
+     //    $item->image_file_name = $url;    // heroku環境
     	$item->seller_id = $user->id;
     	$item->name = $request->input('name');
     	$item->description = $request->input('description');
@@ -126,12 +126,21 @@ class SellController extends Controller
     */
     private function saveImage(UploadedFile $file): string
 		{
+            // ローカル
 			$tempPath = $this->makeTempPath();
-
-			Image::make($file)->fit(250, 150)->save($tempPath);
+            Image::make($file)->fit(250, 150)->save($tempPath);
 
 			$filePath = Storage::disk('public')
 			 ->putFile('item-images', new File($tempPath));
+
+            // s3を使う場合(heroku)
+            // Image::make($file)->fit(250, 150)->save();
+
+            // $filePath = Storage::disk('s3')
+            //  ->putFile('/melpit/', $file, 'public');
+
+            // $file = $request->file('file');
+            // $path = Storage::disk('s3')->putFile('/', $file, 'public');
 
 			return basename($filePath);
 		}

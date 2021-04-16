@@ -67,10 +67,9 @@
                 <div class="card" style="height: 90%;">
                     <a href="{{ route('item', [$item->id]) }}">
                         <div class="position-relative">
-                            <!-- <img class="card-img-top" src="/storage/item-images/{{$item->image_file_name}}"> -->
-                            <!-- <img class="card-img-top" src="{{$item->image_file_name}}"> -->
                             @if (!empty($item->image_file_name))
                                 <img class="card-img-top" src="/storage/item-images/{{$item->image_file_name}}">
+                                <!-- <img class="card-img-top" src="{{$item->image_file_name}}"> -->
                             @else
                                 <img src="/images/item-image-default.png" class="rounded-circle" style="object-fit: cover; width: 250px; height: 150px;">
                             @endif
@@ -87,7 +86,7 @@
                     </a>
                     <a href="{{ route('item', [$item->id]) }}" style="text-decoration: none; color: black;">
                     <div class="card-body">
-                        <small class="text-muted">{{$item->secondaryCategory->primaryCategory->name}} / {{$item->secondaryCategory->name}}</small>
+                        <!-- <small class="text-muted">{{$item->secondaryCategory->primaryCategory->name}} / {{$item->secondaryCategory->name}}</small> -->
                         <h5 class="card-title textOverflow">{{Str::limit($item->name, 16, '...')}}</h5>
                         <form method="POST" action="likeitem" style="width: 80px; height: 25px;">
                         {{ csrf_field() }}
@@ -95,12 +94,12 @@
                             @if($like_model->like_exist(Auth::user()->id,$item->id))
                                 <p class="favorite-marke">
                                   <a class="js-like-toggle loved" href="" data-itemid="{{ $item->id }}"><i class="fas fa-heart"></i></a>
-                                  <span class="likesCount">{{$item->likes_count}}</span>
+                                  <!-- <span class="likesCount">{{$item->likes_count}}</span> -->
                                 </p>
                             @else
                                 <p class="favorite-marke">
                                   <a class="js-like-toggle" href="" data-itemid="{{ $item->id }}"><i class="fas fa-heart"></i></a>
-                                  <span class="likesCount">{{$item->likes_count}}</span>
+                                  <!-- <span class="likesCount">{{$item->likes_count}}</span> -->
                                 </p>
                             @endif​
                             @endauth
@@ -120,10 +119,9 @@
                 <div class="card" style="height: 95%;">
                     <a href="{{ route('item', [$item->id]) }}">
                         <div class="position-relative">
-                            <!-- <img class="card-img-top" src="/storage/item-images/{{$item->image_file_name}}"> -->
-                            <!-- <img class="card-img-top" src="{{$item->image_file_name}}"> -->
                             @if (!empty($item->image_file_name))
                                 <img class="card-img-top" src="/storage/item-images/{{$item->image_file_name}}">
+                                <!-- <img class="card-img-top" src="{{$item->image_file_name}}"> -->
                             @else
                                 <img src="/images/item-image-default.png" class="rounded-circle" style="object-fit: cover; width: 250px; height: 150px;">
                             @endif
@@ -140,7 +138,7 @@
                     </a>
                     <a href="{{ route('item', [$item->id]) }}" style="text-decoration: none; color: black;">
                     <div class="card-body">
-                        <small class="text-muted">{{$item->secondaryCategory->primaryCategory->name}} / {{$item->secondaryCategory->name}}</small>
+                        <!-- <small class="text-muted">{{$item->secondaryCategory->primaryCategory->name}} / {{$item->secondaryCategory->name}}</small> -->
                         <h5 class="card-title textOverflow">{{Str::limit($item->name, 16, '...')}}</h5>
                         <form method="POST" action="likeitem" style="width: 80px; height: 25px;">
                         {{ csrf_field() }}
@@ -175,10 +173,9 @@
                 <div class="card" style="height: 100%;">
                     <a href="{{ route('item', [$item->id]) }}">
                         <div class="position-relative">
-                            <!-- <img class="card-img-top" src="/storage/item-images/{{$item->image_file_name}}"> -->
-                            <!-- <img class="card-img-top" src="{{$item->image_file_name}}"> -->
                             @if (!empty($item->image_file_name))
                                 <img class="card-img-top" src="/storage/item-images/{{$item->image_file_name}}">
+                                <!-- <img class="card-img-top" src="{{$item->image_file_name}}"> -->
                             @else
                                 <img src="/images/item-image-default.png" class="rounded-circle" style="object-fit: cover; width: 250px; height: 150px;">
                             @endif
@@ -195,7 +192,7 @@
                     </a>
                     <a href="{{ route('item', [$item->id]) }}" style="text-decoration: none; color: black;">
                     <div class="card-body">
-                        <small class="text-muted">{{$item->secondaryCategory->primaryCategory->name}} / {{$item->secondaryCategory->name}}</small>
+                        <!-- <small class="text-muted">{{$item->secondaryCategory->primaryCategory->name}} / {{$item->secondaryCategory->name}}</small> -->
                         <h5 class="card-title textOverflow">{{Str::limit($item->name, 16, '...')}}</h5>
                         <form method="POST" action="likeitem" style="width: 80px; height: 25px;">
                         {{ csrf_field() }}
@@ -230,10 +227,9 @@
                 <div class="card" style="height: 100%;">
                     <a href="{{ route('item', [$item->id]) }}">
                         <div class="position-relative">
-                            <!-- <img class="card-img-top" src="/storage/item-images/{{$item->image_file_name}}"> -->
-                            <!-- <img class="card-img-top" src="{{$item->image_file_name}}"> -->
                             @if (!empty($item->image_file_name))
                                 <img class="card-img-top" src="/storage/item-images/{{$item->image_file_name}}">
+                                <!-- <img class="card-img-top" src="{{$item->image_file_name}}"> -->
                             @else
                                 <img src="/images/item-image-default.png" class="rounded-circle" style="object-fit: cover; width: 250px; height: 150px;">
                             @endif
@@ -250,7 +246,7 @@
                     </a>
                     <a href="{{ route('item', [$item->id]) }}" style="text-decoration: none; color: black;">
                     <div class="card-body">
-                        <small class="text-muted">{{$item->secondaryCategory->primaryCategory->name}} / {{$item->secondaryCategory->name}}</small>
+                        <!-- <small class="text-muted">{{$item->secondaryCategory->primaryCategory->name}} / {{$item->secondaryCategory->name}}</small> -->
                         <h5 class="card-title textOverflow">{{Str::limit($item->name, 16, '...')}}</h5>
                         <form method="POST" action="likeitem" style="width: 80px; height: 25px;">
                         {{ csrf_field() }}

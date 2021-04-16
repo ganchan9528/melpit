@@ -19,10 +19,9 @@
                 <div class="card">
                     <a href="{{ route('item', [$item->id]) }}">
                         <div class="position-relative">
-                            <!-- <img class="card-img-top" src="/storage/item-images/{{$item->image_file_name}}"> -->
-                            <!-- <img class="card-img-top" src="{{$item->image_file_name}}"> -->
                             @if (!empty($item->image_file_name))
                                 <img class="card-img-top" src="/storage/item-images/{{$item->image_file_name}}">
+                                <!-- <img class="card-img-top" src="{{$item->image_file_name}}"> -->
                             @else
                                 <img src="/images/item-image-default.png" class="rounded-circle" style="object-fit: cover; width: 250px; height: 150px;">
                             @endif
